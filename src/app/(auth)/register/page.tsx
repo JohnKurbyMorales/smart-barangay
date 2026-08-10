@@ -24,32 +24,34 @@ export default function RegisterPage() {
   const onSubmit = async (values: RegisterValues) => {
     setLoading(true)
     const supabase = createClient()
-    
+
     const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
-      options: { 
+      options: {
         data: { full_name: values.full_name },
-        emailRedirectTo: undefined, // Skip email confirmation
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       }
     })
 
-    if (error) { 
+    if (error) {
       toast.error(error.message)
       setLoading(false)
-      return 
+      return
     }
 
-    // If email confirmation is disabled, user is auto-confirmed
-    // Just sign them in directly
-    if (data.user && data.session) {
+    // Auto-confirmed (email confirmation disabled in Supabase)
+    if (data.session) {
       toast.success('Account created! Welcome to SMART-Barangay!')
       router.push('/submit-report')
       return
     }
 
-    // Email confirmation is enabled — show message
-    toast.success('Account created! Please check your email to verify, or contact the admin to activate your account.')
+    // Email confirmation required
+    toast.success('Account created!', {
+      description: `A confirmation email has been sent to ${values.email}. Please check your inbox and click the link to activate your account.`,
+      duration: 8000,
+    })
     router.push('/login')
   }
 

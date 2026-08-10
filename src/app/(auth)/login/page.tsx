@@ -16,7 +16,8 @@ import { ShieldAlert, Loader2 } from 'lucide-react'
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirect = searchParams.get('redirect') || '/submit-report' // Default to submit-report for residents
+  const redirect = searchParams.get('redirect') || '/submit-report'
+  const error = searchParams.get('error')
   const [loading, setLoading] = useState(false)
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginValues>({
@@ -31,12 +32,11 @@ function LoginForm() {
       password: values.password,
     })
     if (error) {
-      // Give clear message for email not confirmed
-      if (error.message.toLowerCase().includes('email not confirmed') || 
+      if (error.message.toLowerCase().includes('email not confirmed') ||
           error.message.toLowerCase().includes('invalid login credentials')) {
-        toast.error('Email not verified. Please check your inbox or contact admin to activate your account.', {
-          duration: 6000,
-          description: 'Admin can verify accounts via Supabase Dashboard → Authentication → Users'
+        toast.error('Email not verified yet.', {
+          description: 'Please check your inbox and click the confirmation link we sent you.',
+          duration: 7000,
         })
       } else {
         toast.error(error.message)
@@ -49,7 +49,15 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-4">
+    <div className="space-y-4">
+      {/* Show error from callback */}
+      {error === 'confirmation_failed' && (
+        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
+          ❌ Email confirmation failed. Please try registering again or contact support.
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-4">
       <div>
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" placeholder="you@example.com" {...register('email')} className="mt-1" />
@@ -67,6 +75,7 @@ function LoginForm() {
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Signing in...</> : 'Sign In'}
       </Button>
     </form>
+    </div>
   )
 }
 
