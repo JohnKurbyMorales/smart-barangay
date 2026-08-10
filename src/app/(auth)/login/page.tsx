@@ -31,7 +31,16 @@ function LoginForm() {
       password: values.password,
     })
     if (error) {
-      toast.error(error.message)
+      // Give clear message for email not confirmed
+      if (error.message.toLowerCase().includes('email not confirmed') || 
+          error.message.toLowerCase().includes('invalid login credentials')) {
+        toast.error('Email not verified. Please check your inbox or contact admin to activate your account.', {
+          duration: 6000,
+          description: 'Admin can verify accounts via Supabase Dashboard → Authentication → Users'
+        })
+      } else {
+        toast.error(error.message)
+      }
       setLoading(false)
       return
     }

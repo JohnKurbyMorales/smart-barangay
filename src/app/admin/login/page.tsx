@@ -24,7 +24,15 @@ function AdminLoginForm() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      toast.error(error.message)
+      if (error.message.toLowerCase().includes('email not confirmed') ||
+          error.message.toLowerCase().includes('invalid login credentials')) {
+        toast.error('Email not verified or invalid credentials.', {
+          duration: 6000,
+          description: 'Run this in Supabase SQL Editor: UPDATE auth.users SET email_confirmed_at = NOW() WHERE email = \'' + email + '\';'
+        })
+      } else {
+        toast.error(error.message)
+      }
       setLoading(false)
       return
     }
