@@ -33,6 +33,6 @@ export async function GET(request: NextRequest) {
 
   // If something went wrong, redirect to login with error
   return NextResponse.redirect(
-    new URL('/login?error=verification_failed', request.url)
+    new URL('/login?error=confirmation_failed', request.url)
   )
 }

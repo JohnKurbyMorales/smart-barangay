@@ -33,8 +33,8 @@ function LoginForm() {
     })
     if (error) {
       if (error.message.toLowerCase().includes('email not confirmed')) {
-        toast.error('Email not verified yet.', {
-          description: 'Please check your inbox for the verification code we sent you.',
+        toast.error('Email not confirmed yet.', {
+          description: 'Please check your inbox for the confirmation link we sent you.',
           duration: 7000,
         })
       } else if (error.message.toLowerCase().includes('invalid login credentials')) {
@@ -57,7 +57,7 @@ function LoginForm() {
       {/* Show error from callback */}
       {error === 'verification_failed' && (
         <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
-          ❌ Email verification failed. Please try registering again or contact support.
+          ❌ Email confirmation failed. Please try registering again or contact support.
         </div>
       )}
 

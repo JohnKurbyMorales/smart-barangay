@@ -24,7 +24,7 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   // ── Static paths that never need auth checks ───────────
-  const publicPaths = ['/', '/login', '/register', '/forgot-password', '/admin/login', '/verify-email', '/reset-password']
+  const publicPaths = ['/', '/login', '/register', '/forgot-password', '/admin/login', '/reset-password']
   const isPublicPath = publicPaths.includes(pathname)
 
   // ── Get user session (required by Supabase SSR) ────────
@@ -48,21 +48,6 @@ export async function updateSession(request: NextRequest) {
     }
 
     return supabaseResponse
-  }
-
-  // ── Email verification check ───────────────────────────
-  // If user is logged in but email not verified, redirect to verify-email page
-  // (except for verify-email page itself and auth callback)
-  if (user && !user.email_confirmed_at) {
-    const allowedUnverifiedPaths = ['/verify-email', '/auth/callback', '/login', '/register']
-    const isAllowedPath = allowedUnverifiedPaths.some(p => pathname.startsWith(p))
-    
-    if (!isAllowedPath) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/verify-email'
-      url.searchParams.set('email', user.email || '')
-      return NextResponse.redirect(url)
-    }
   }
 
   // ── User is logged in: do ONE role fetch for all checks ─
