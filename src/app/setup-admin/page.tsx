@@ -31,7 +31,7 @@ export default function SetupAdminPage() {
           data: {
             full_name: formData.fullName
           },
-          emailRedirectTo: undefined // Skip email confirmation for admin setup
+          emailRedirectTo: undefined // Skip email verification for admin setup
         }
       })
 
@@ -53,9 +53,9 @@ export default function SetupAdminPage() {
           throw profileError
         }
 
-        // If user needs confirmation, show manual confirmation instruction
+        // If user needs verification, show manual verification instruction
         if (!authData.user.email_confirmed_at) {
-          toast.info('Account created! Please check Supabase Dashboard to confirm email or disable email confirmation.')
+          toast.info('Account created! Please check Supabase Dashboard to verify email or disable email verification.')
         }
 
         toast.success('Admin account created successfully!')
@@ -65,7 +65,7 @@ export default function SetupAdminPage() {
     } catch (error: any) {
       console.error('Error creating admin:', error)
       if (error.message?.includes('email_address_not_confirmed')) {
-        toast.error('Email confirmation required. Check Supabase Authentication settings.')
+        toast.error('Email verification required. Check Supabase Authentication settings.')
       } else {
         toast.error(error.message || 'Failed to create admin account')
       }
@@ -134,14 +134,14 @@ export default function SetupAdminPage() {
             </ul>
             
             <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded">
-              <p className="text-xs text-yellow-700 font-medium">📧 Email Confirmation Issue?</p>
+              <p className="text-xs text-yellow-700 font-medium">📧 Email Verification Issue?</p>
               <p className="text-xs text-yellow-600 mt-1">
-                If login fails due to email confirmation:
+                If login fails due to email verification:
               </p>
               <ol className="text-xs text-yellow-600 mt-1 ml-3 space-y-0.5">
                 <li>1. Go to Supabase Dashboard → Authentication → Settings</li>
-                <li>2. Disable "Enable email confirmations"</li>
-                <li>3. OR manually confirm user in Authentication → Users</li>
+                <li>2. Disable "Enable email verifications"</li>
+                <li>3. OR manually verify user in Authentication → Users</li>
               </ol>
             </div>
           </div>

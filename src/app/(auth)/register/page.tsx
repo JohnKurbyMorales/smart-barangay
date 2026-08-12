@@ -43,20 +43,20 @@ export default function RegisterPage() {
 
     console.log('Signup response:', data)
 
-    // Auto-confirmed (email confirmation disabled in Supabase)
+    // Auto-confirmed (email verification disabled in Supabase)
     if (data.session) {
       toast.success('Account created! Welcome to SMART-Barangay!')
       router.push('/submit-report')
       return
     }
 
-    // Email confirmation required
+    // Email verification required
     if (data.user && !data.session) {
       toast.success('Account created!', {
-        description: 'A confirmation email has been sent to your email. Please check your inbox and click the link to activate your account.',
-        duration: 8000,
+        description: 'We sent a verification code to your email address.',
+        duration: 5000,
       })
-      router.push('/login')
+      router.push(`/verify-email?email=${encodeURIComponent(values.email)}`)
       return
     }
 
