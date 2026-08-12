@@ -35,10 +35,13 @@ export default function RegisterPage() {
     })
 
     if (error) {
+      console.error('Signup error:', error)
       toast.error(error.message)
       setLoading(false)
       return
     }
+
+    console.log('Signup response:', data)
 
     // Auto-confirmed (email verification disabled in Supabase)
     if (data.session) {
@@ -48,11 +51,18 @@ export default function RegisterPage() {
     }
 
     // Email verification required
-    toast.success('Account created!', {
-      description: 'We sent a verification code to your email address.',
-      duration: 5000,
-    })
-    router.push(`/verify-email?email=${encodeURIComponent(values.email)}`)
+    if (data.user && !data.session) {
+      toast.success('Account created!', {
+        description: 'We sent a verification code to your email address.',
+        duration: 5000,
+      })
+      router.push(`/verify-email?email=${encodeURIComponent(values.email)}`)
+      return
+    }
+
+    // Unexpected case
+    toast.error('Registration completed but something unexpected happened. Please try logging in.')
+    router.push('/login')
   }
 
   return (

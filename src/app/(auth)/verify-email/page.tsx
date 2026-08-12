@@ -80,6 +80,8 @@ function VerifyEmailForm() {
     const supabase = createClient()
 
     try {
+      console.log('Verifying OTP:', { email, code: verificationCode })
+
       // Verify the OTP code
       const { data, error } = await supabase.auth.verifyOtp({
         email,
@@ -87,14 +89,21 @@ function VerifyEmailForm() {
         type: 'email'
       })
 
+      console.log('Verify OTP response:', { data, error })
+
       if (error) {
+        console.error('OTP verification error:', error)
+        
         // Handle specific error types
         if (error.message.toLowerCase().includes('expired')) {
           toast.error('Verification code expired. Please request a new code.')
         } else if (error.message.toLowerCase().includes('invalid')) {
           toast.error('Invalid verification code. Please try again.')
+        } else if (error.message.toLowerCase().includes('not found')) {
+          toast.error('Verification session not found. Please register again.')
+          setTimeout(() => router.push('/register'), 2000)
         } else {
-          toast.error(error.message)
+          toast.error(error.message || 'Verification failed. Please try again.')
         }
         setLoading(false)
         return
@@ -104,8 +113,12 @@ function VerifyEmailForm() {
         toast.success('Email verified successfully!')
         // Redirect to dashboard
         router.push('/submit-report')
+      } else {
+        toast.error('Verification completed but no session created. Please try logging in.')
+        router.push('/login')
       }
     } catch (err) {
+      console.error('Unexpected error during verification:', err)
       toast.error('An error occurred. Please try again.')
       setLoading(false)
     }
