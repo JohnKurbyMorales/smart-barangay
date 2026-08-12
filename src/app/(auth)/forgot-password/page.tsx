@@ -20,7 +20,7 @@ function ForgotPasswordForm() {
     setLoading(true)
     const supabase = createClient()
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
+      redirectTo: `${window.location.origin}/reset-password`,
     })
     if (error) { toast.error(error.message); setLoading(false); return }
     setSent(true)

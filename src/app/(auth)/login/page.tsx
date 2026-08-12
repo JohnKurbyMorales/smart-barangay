@@ -32,11 +32,15 @@ function LoginForm() {
       password: values.password,
     })
     if (error) {
-      if (error.message.toLowerCase().includes('email not confirmed') ||
-          error.message.toLowerCase().includes('invalid login credentials')) {
+      if (error.message.toLowerCase().includes('email not confirmed')) {
         toast.error('Email not verified yet.', {
-          description: 'Please check your inbox and click the confirmation link we sent you.',
+          description: 'Please check your inbox for the verification code we sent you.',
           duration: 7000,
+        })
+      } else if (error.message.toLowerCase().includes('invalid login credentials')) {
+        toast.error('Invalid email or password', {
+          description: 'Please check your credentials and try again.',
+          duration: 5000,
         })
       } else {
         toast.error(error.message)
@@ -51,9 +55,9 @@ function LoginForm() {
   return (
     <div className="space-y-4">
       {/* Show error from callback */}
-      {error === 'confirmation_failed' && (
+      {error === 'verification_failed' && (
         <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
-          ❌ Email confirmation failed. Please try registering again or contact support.
+          ❌ Email verification failed. Please try registering again or contact support.
         </div>
       )}
 

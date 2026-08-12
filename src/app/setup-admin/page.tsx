@@ -31,7 +31,7 @@ export default function SetupAdminPage() {
           data: {
             full_name: formData.fullName
           },
-          emailRedirectTo: undefined // Skip email confirmation for admin setup
+          emailRedirectTo: undefined // Skip email verification for admin setup
         }
       })
 
@@ -53,9 +53,9 @@ export default function SetupAdminPage() {
           throw profileError
         }
 
-        // If user needs confirmation, show manual confirmation instruction
+        // If user needs verification, show manual verification instruction
         if (!authData.user.email_confirmed_at) {
-          toast.info('Account created! Please check Supabase Dashboard to confirm email or disable email confirmation.')
+          toast.info('Account created! Please check Supabase Dashboard to verify email or disable email verification.')
         }
 
         toast.success('Admin account created successfully!')
@@ -140,8 +140,8 @@ export default function SetupAdminPage() {
               </p>
               <ol className="text-xs text-yellow-600 mt-1 ml-3 space-y-0.5">
                 <li>1. Go to Supabase Dashboard → Authentication → Settings</li>
-                <li>2. Disable "Enable email confirmations"</li>
-                <li>3. OR manually confirm user in Authentication → Users</li>
+                <li>2. Disable "Enable email verifications"</li>
+                <li>3. OR manually verify user in Authentication → Users</li>
               </ol>
             </div>
           </div>
